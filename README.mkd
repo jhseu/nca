@@ -2,6 +2,8 @@ nca
 ===
 An implementation of neighborhood components analysis in C++.
 
+nca uses stochastic gradient ascent for maximization.
+
 Read the original paper:
 <http://www.cs.toronto.edu/~hinton/absps/nca.pdf>
 
