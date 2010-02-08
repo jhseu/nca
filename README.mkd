@@ -8,8 +8,9 @@ Read the original paper:
 Requirements
 ------------
 
-Eigen: http://eigen.tuxfamily.org
-(optional) boost: http://www.boost.org
+Eigen: <http://eigen.tuxfamily.org>
+
+(optional) boost: <http://www.boost.org>
 
 boost is required if you want to run the test program.
 
@@ -20,8 +21,9 @@ If you want to use nca in your own project, just copy over the nca.hpp header in
 
 If you want to run the test program, you may need to modify the Makefile to reflect the location of your eigen headers. After that, you can run it on some sample datasets, such as:
 
-Iris: http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data
-Wine: http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data
+Iris: <http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data>
+
+Wine: <http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data>
 
 For command-line usage:
 
