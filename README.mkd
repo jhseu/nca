@@ -1,0 +1,118 @@
+nca
+===
+An implementation of neighborhood components analysis in C++.
+
+Read the original paper:
+<http://www.cs.toronto.edu/~hinton/absps/nca.pdf>
+
+Requirements
+------------
+
+    Eigen: <http://eigen.tuxfamily.org>
+    (optional) boost: <http://www.boost.org>
+
+boost is required if you want to run the test program.
+
+Usage
+-----
+
+If you want to use nca in your own project, just copy over the nca.hpp header into your include directory.
+
+If you want to run the test program, you may need to modify the Makefile to reflect the location of your eigen headers. After that, you can run it on some sample datasets, such as:
+
+    Iris: http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data
+    Wine: http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data
+
+For command-line usage:
+
+    usage: ./nca csv_file label_index iterations learning_rate
+
+        csv_file: the input file. It must be in csv format.
+        label_index: the index (starting from 0) of the class label on each line of the input file.
+        iterations: how many iterations to run sgd. Make this at least 100000 for good results.
+        learning_rate: how fast it learns. 0.01 or 0.001 is usually a good value.
+
+An example:
+
+    make
+    ./nca iris.data 4 100000 0.01
+
+    -0.09935 -0.2215 0.3383 0.443
+    0.2532 0.5835 -0.8461 -0.8915
+    -0.729 -0.6386 1.767 1.832
+    -0.9405 -0.8461 2.281 2.794
+
+    Nearest neighbors on raw data:
+    Got 144 correct out of 150
+
+    Nearest neighbors on scaled data:
+    Got 143 correct out of 150
+
+    Nearest neighbors on nca data:
+    Got 146 correct out of 150
+
+It first prints the resulting transformation matrix, and then it compares results from raw, scaled, or nca nearest neighbors (k=1).
+
+Another example:
+
+    ./nca wine.data 0 100000 0.001
+
+    0.4978 0.2596 0.08335 -0.08415 0.01434 0.01025 -0.005508 0.002091 -0.09629 0.4064 -0.06766 0.003626 0.01129
+    0.2134 0.5756 0.05306 0.1198 -0.01342 0.04069 -0.06715 -0.02467 0.005831 0.2541 -0.09105 0.06598 -0.02819
+    0.1268 0.1405 0.6284 -0.08583 0.003564 0.02861 0.1232 -0.002581 -0.04287 0.2555 -0.009432 0.07747 0.01096
+    -0.005172 0.0633 -0.02238 0.07806 -0.006145 0.009894 -0.05917 -0.008921 0.02883 -0.05833 -0.01572 0.0164 -0.01219
+    0.00425 0.01535 -0.00187 0.009342 0.000703 -0.004693 -0.02994 -0.001181 -0.01185 0.01151 -0.006103 -0.007321 -0.0005278
+    -0.01359 0.03761 0.01087 0.02303 -0.005879 0.3658 0.1907 0.0133 0.1144 -0.2291 0.04946 0.1213 -0.01147
+    -0.0318 -0.03219 0.05605 -0.105 -0.02715 0.04992 0.6728 0.02288 0.2075 -0.1793 0.07372 0.1541 -0.007872
+    0.07661 -0.09324 0.007211 -0.1328 0.0343 0.02169 0.07863 1.889 -0.08345 0.146 0.01709 0.03459 0.0254
+    -0.04669 0.007582 -0.007626 0.06529 -0.04801 0.01435 0.2305 0.0005779 0.4935 -0.2362 0.02504 0.06895 -0.03655
+    0.1796 0.1617 0.05787 -0.07707 0.02035 -0.04257 -0.1533 -0.004989 -0.1726 0.427 -0.06306 -0.08069 0.01949
+    -0.2027 -0.2696 -0.02322 -0.05194 0.001799 0.06445 0.3156 0.02274 0.1676 -0.3912 0.9321 0.159 0.005724
+    -0.05804 0.03536 0.03448 0.07081 -0.01617 0.1041 0.4157 0.02553 0.2509 -0.3545 0.09938 0.6347 -0.02614
+    0.004366 0.008813 3.738e-05 0.001056 0.001054 -0.005621 -0.02075 -0.0006036 -0.01226 0.01737 -0.004586 -0.009052 0.0005957
+
+    Nearest neighbors on raw data:
+    Got 137 correct out of 178
+
+    Nearest neighbors on scaled data:
+    Got 169 correct out of 178
+
+    Nearest neighbors on nca data:
+    Got 177 correct out of 178
+
+Programming
+-----------
+
+You can best understand how to use nca.hpp by reading the nca.cpp file.
+
+Include the required headers:
+
+    #include "nca.hpp"
+    #include <Eigen/Core>
+
+Initialize your data:
+
+    std::vector<Eigen::VectorXd> input;
+    std::vector<std::string> label;
+    int iterations = 100000;
+    double learning_rate = 0.001;
+
+Add entries to input and label. The indexes for input and label should correspond with one another.
+
+To get the transformation matrix:
+
+    Eigen::MatrixXd A = neighborhood_components_analysis(input, label, scaling_matrix(input), iterations, learning_rate);
+
+scaling_matrix() returns a matrix that scales the input so that the difference between the minimum of a column and the maximum of a column are equivalent for all columns. It's supplied as the third argument because neighborhood components analysis requires an initial transformation matrix. The best initial matrix often treat all columns equally.
+
+If you want the precision matrix (or inverse covariance matrix) for the Mahalanobis distance:
+
+    MatrixXd precision = A.tranpose()*A
+
+To rescale your input for nearest neighbors or support vector machines (rbf kernel):
+
+    std::vector<Eigen::VectorXd> nca_input(scale(A, input));
+
+To test your matrix, you probably want to run nearest neighbors:
+
+    nearest_neighbors(nca_input, label);
