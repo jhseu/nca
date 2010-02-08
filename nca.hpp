@@ -1,4 +1,5 @@
 #ifndef NCA_HPP
+#define NCA_HPP
 
 #include <iostream>
 #include <limits>
