@@ -7,7 +7,7 @@
 
 #include <Eigen/Core>
 
-void nearest_neighbors(const std::vector<Eigen::VectorXd>& input, const std::vector<std::string> label) {
+void nearest_neighbors(const std::vector<Eigen::VectorXd>& input, const std::vector<std::string>& label) {
     unsigned int correct = 0;
 
     for(unsigned int i = 0; i < input.size(); ++i) {
@@ -57,7 +57,7 @@ Eigen::MatrixXd scaling_matrix(const std::vector<Eigen::VectorXd>& input) {
     return A;
 }
 
-std::vector<Eigen::VectorXd> scale(const Eigen::MatrixXd ScaleA, const std::vector<Eigen::VectorXd>& input) {
+std::vector<Eigen::VectorXd> scale(const Eigen::MatrixXd& ScaleA, const std::vector<Eigen::VectorXd>& input) {
     std::vector<Eigen::VectorXd> scaled_input;
     for(std::vector<Eigen::VectorXd>::const_iterator i = input.begin(); i != input.end(); ++i) {
         scaled_input.push_back(ScaleA * (*i));
@@ -66,7 +66,7 @@ std::vector<Eigen::VectorXd> scale(const Eigen::MatrixXd ScaleA, const std::vect
     return scaled_input;
 }
 
-Eigen::MatrixXd neighborhood_components_analysis(const std::vector<Eigen::VectorXd>& input, const std::vector<std::string> label, const Eigen::MatrixXd& init, unsigned int iterations, double learning_rate) {
+Eigen::MatrixXd neighborhood_components_analysis(const std::vector<Eigen::VectorXd>& input, const std::vector<std::string>& label, const Eigen::MatrixXd& init, unsigned int iterations, double learning_rate) {
     Eigen::MatrixXd A = init;
     for(unsigned int it = 0; it < iterations; ++it) {
         unsigned int i = it % input.size();
