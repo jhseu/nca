@@ -111,7 +111,7 @@ scaling_matrix() returns a matrix that scales the input so that the difference b
 
 If you want the precision matrix (or inverse covariance matrix) for the Mahalanobis distance:
 
-    MatrixXd precision = A.tranpose()*A
+    MatrixXd precision = A.tranpose()*A;
 
 To rescale your input for nearest neighbors or support vector machines (rbf kernel):
 
